@@ -51,7 +51,14 @@
                 </div>
                 
                 <button type="submit" id="submitBtn" class="btn" style="width: 100%">Analisar Perfil</button>
-                <div class="loader mt-4" id="loader"></div>
+                
+                <!-- Loader e Mensagens de Progresso -->
+                <div id="loaderContainer" style="display: none; text-align: center; margin-top: 2rem;">
+                    <div class="loader"></div>
+                    <h4 id="loaderTitle" style="color: var(--color-accent); margin-top: 15px; font-family: var(--font-heading); font-size: 1.3rem;">Iniciando análise...</h4>
+                    <p id="loaderSubtitle" style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 5px;">Por favor, não feche esta página. Esse processo pode levar cerca de 1 minuto.</p>
+                </div>
+
                 <div class="error-message" id="errorMsg"></div>
             </form>
             
@@ -91,14 +98,29 @@
             const businessDesc = document.getElementById('businessDesc').value;
             
             const submitBtn = document.getElementById('submitBtn');
-            const loader = document.getElementById('loader');
+            const loaderContainer = document.getElementById('loaderContainer');
+            const loaderTitle = document.getElementById('loaderTitle');
             const errorMsg = document.getElementById('errorMsg');
             const resultContainer = document.getElementById('resultContainer');
             
             submitBtn.style.display = 'none';
-            loader.style.display = 'block';
+            loaderContainer.style.display = 'block';
             errorMsg.textContent = '';
             resultContainer.style.display = 'none';
+
+            // Mensagens dinâmicas de carregamento
+            const messages = [
+                "Conectando ao Instagram...",
+                "Lendo a bio e os últimos posts...",
+                "A Inteligência Artificial da Fluo está analisando...",
+                "Encontrando gargalos e oportunidades...",
+                "Escrevendo o relatório final..."
+            ];
+            let msgIndex = 0;
+            const msgInterval = setInterval(() => {
+                msgIndex = (msgIndex + 1) % messages.length;
+                loaderTitle.textContent = messages[msgIndex];
+            }, 8000); // Troca a mensagem a cada 8 segundos
             
             try {
                 const res = await fetch('/api/analyze', {
@@ -109,7 +131,8 @@
                 
                 const data = await res.json();
                 
-                loader.style.display = 'none';
+                clearInterval(msgInterval);
+                loaderContainer.style.display = 'none';
                 
                 if (data.success) {
                     latestHtml = data.html;
@@ -123,7 +146,8 @@
                     submitBtn.style.display = 'inline-block';
                 }
             } catch (err) {
-                loader.style.display = 'none';
+                clearInterval(msgInterval);
+                loaderContainer.style.display = 'none';
                 errorMsg.textContent = 'Erro de conexão com o servidor.';
                 submitBtn.style.display = 'inline-block';
             }
