@@ -16,6 +16,11 @@ db.serialize(() => {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `);
+
+    // Migração: Adicionar coluna credits se ela não existir nas tabelas antigas
+    db.run(`ALTER TABLE users ADD COLUMN credits INTEGER DEFAULT 2`, (err) => {
+        // Ignorar o erro se a coluna já existir (SQLITE_ERROR: duplicate column name: credits)
+    });
 });
 
 const createUser = async (username, password) => {
