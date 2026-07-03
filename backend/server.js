@@ -85,6 +85,29 @@ app.get('/api/me', (req, res) => {
     }
 });
 
+// Criar novo cliente (Apenas para a Fluo usar)
+app.post('/api/admin/create-user', async (req, res) => {
+    const { adminPassword, username, password } = req.body;
+    
+    // Senha master para proteger a criação de usuários
+    if (adminPassword !== 'fluo-admin-2026') {
+        return res.status(403).json({ error: 'Senha de administrador incorreta.' });
+    }
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Usuário e senha são obrigatórios.' });
+    }
+
+    try {
+        const { createUser } = require('./database');
+        createUser(username, password);
+        res.json({ success: true, message: `Cliente ${username} criado com sucesso!` });
+    } catch (e) {
+        res.status(500).json({ error: 'Erro ao criar cliente.' });
+    }
+});
+
+
 // Análise Protegida
 app.post('/api/analyze', requireAuth, async (req, res) => {
     try {
