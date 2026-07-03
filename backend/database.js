@@ -12,6 +12,7 @@ db.serialize(() => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             password_hash TEXT,
+            credits INTEGER DEFAULT 2,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `);
@@ -42,8 +43,28 @@ const verifyUser = async (username, password) => {
     });
 };
 
+const getUserCredits = async (userId) => {
+    return new Promise((resolve, reject) => {
+        db.get('SELECT credits FROM users WHERE id = ?', [userId], (err, row) => {
+            if (err) reject(err);
+            else resolve(row ? row.credits : 0);
+        });
+    });
+};
+
+const consumeCredit = async (userId) => {
+    return new Promise((resolve, reject) => {
+        db.run('UPDATE users SET credits = credits - 1 WHERE id = ? AND credits > 0', [userId], function(err) {
+            if (err) reject(err);
+            else resolve(this.changes > 0);
+        });
+    });
+};
+
 module.exports = {
     db,
     createUser,
-    verifyUser
+    verifyUser,
+    getUserCredits,
+    consumeCredit
 };
