@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const session = require('express-session');
-const { verifyUser } = require('./database');
+const { verifyUser, getUserCredits, consumeCredit } = require('./database');
 
 dotenv.config();
 
@@ -112,13 +112,20 @@ app.post('/api/admin/create-user', async (req, res) => {
 app.post('/api/analyze', requireAuth, async (req, res) => {
     try {
         const { username, businessDescription } = req.body;
+        const userId = req.session.userId;
         
+        // Verificar Créditos
+        const credits = await getUserCredits(userId);
+        if (credits <= 0) {
+            return res.status(403).json({ error: 'Você atingiu o limite de 2 análises. Adquira um novo acesso para continuar.' });
+        }
+
         if (!username) {
             return res.status(400).json({ error: 'Username do Instagram é obrigatório.' });
         }
         
         const cleanUsername = username.replace('@', '').trim();
-        console.log(`[User ${req.session.username}] Iniciando análise para @${cleanUsername}...`);
+        console.log(`[User ${req.session.username} - Creditos: ${credits}] Iniciando análise para @${cleanUsername}...`);
 
         let instagramData = '';
         let latestImagesHtml = '';
@@ -190,6 +197,9 @@ Retorne SOMENTE o JSON válido, sem markdown.
         htmlReport = htmlReport.replace(/{{challenges}}/g, diagnostic.brandPositioning.challenges);
         htmlReport = htmlReport.replace(/{{immediateImprovements}}/g, diagnostic.immediateImprovements.map(s => `<li>${s}</li>`).join(''));
         htmlReport = htmlReport.replace(/{{latestPostsImages}}/g, latestImagesHtml);
+
+        // Consumir 1 crédito após análise gerada com sucesso
+        await consumeCredit(userId);
 
         res.json({ success: true, html: htmlReport });
     } catch (error) {
