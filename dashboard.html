@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel | Fluo Diagnóstico</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard-content {
+            background-color: var(--color-bg-light);
+            padding: 3rem;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        #resultContainer {
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        #downloadBtn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="logo">FLUO.</div>
+            <div>
+                <span id="userGreeting" style="margin-right: 1rem;"></span>
+                <button id="logoutBtn" class="btn btn-outline">Sair</button>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <h2 class="text-center mb-4">Gerar Novo Diagnóstico</h2>
+            
+            <form id="analyzeForm">
+                <div class="form-group">
+                    <label for="username">Instagram do Cliente (sem o @)</label>
+                    <input type="text" id="username" class="form-control" required placeholder="ex: fluo.assessoria">
+                </div>
+                
+                <div class="form-group">
+                    <label for="businessDesc">Qual é o nicho / produto do cliente?</label>
+                    <input type="text" id="businessDesc" class="form-control" required placeholder="ex: Clínica de estética avançada">
+                </div>
+                
+                <button type="submit" id="submitBtn" class="btn" style="width: 100%">Analisar Perfil</button>
+                <div class="loader mt-4" id="loader"></div>
+                <div class="error-message" id="errorMsg"></div>
+            </form>
+            
+            <div id="resultContainer">
+                <h3 class="text-center" style="color: #69db7c;">Diagnóstico Concluído!</h3>
+                <p class="text-center mt-2">O relatório foi gerado com sucesso.</p>
+                <button id="downloadBtn" class="btn">Baixar Relatório HTML</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check Auth
+        fetch('/api/me')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.loggedIn) {
+                    window.location.href = 'login.html';
+                } else {
+                    document.getElementById('userGreeting').textContent = `Olá, ${data.username}`;
+                }
+            });
+            
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = 'login.html';
+        });
+        
+        // Analyze
+        let latestHtml = '';
+        let latestUsername = '';
+        
+        document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const businessDesc = document.getElementById('businessDesc').value;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+            const errorMsg = document.getElementById('errorMsg');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            submitBtn.style.display = 'none';
+            loader.style.display = 'block';
+            errorMsg.textContent = '';
+            resultContainer.style.display = 'none';
+            
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, businessDescription: businessDesc })
+                });
+                
+                const data = await res.json();
+                
+                loader.style.display = 'none';
+                
+                if (data.success) {
+                    latestHtml = data.html;
+                    latestUsername = username.replace('@', '').trim();
+                    resultContainer.style.display = 'block';
+                    submitBtn.textContent = 'Fazer Nova Análise';
+                    submitBtn.style.display = 'inline-block';
+                    submitBtn.classList.add('btn-outline');
+                } else {
+                    errorMsg.textContent = data.error || 'Erro ao gerar o diagnóstico.';
+                    submitBtn.style.display = 'inline-block';
+                }
+            } catch (err) {
+                loader.style.display = 'none';
+                errorMsg.textContent = 'Erro de conexão com o servidor.';
+                submitBtn.style.display = 'inline-block';
+            }
+        });
+        
+        // Download
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (!latestHtml) return;
+            
+            const blob = new Blob([latestHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio_fluo_${latestUsername}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
