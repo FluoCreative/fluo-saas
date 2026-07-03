@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="css/style.css">
     <style>
         .dashboard-content {
-            background-color: var(--color-bg-light);
+            background-color: var(--color-bg-card);
             padding: 3rem;
-            border-radius: 8px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
             max-width: 600px;
-            margin: 0 auto;
+            margin: 40px auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
         
         #resultContainer {
@@ -26,16 +28,15 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="dashboard-header">
-            <div class="logo">FLUO.</div>
-            <div>
-                <span id="userGreeting" style="margin-right: 1rem;"></span>
-                <button id="logoutBtn" class="btn btn-outline">Sair</button>
-            </div>
+    <nav class="navbar container">
+        <div class="logo">FLUO.</div>
+        <div>
+            <span id="userGreeting" style="margin-right: 1rem; color: var(--color-text-muted);"></span>
+            <button id="logoutBtn" class="btn btn-outline" style="padding: 8px 16px;">Sair</button>
         </div>
+    </nav>
 
-        <div class="dashboard-content">
+    <div class="container">        <div class="dashboard-content">
             <h2 class="text-center mb-4">Gerar Novo Diagnóstico</h2>
             
             <form id="analyzeForm">
