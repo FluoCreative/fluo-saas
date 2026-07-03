@@ -210,7 +210,7 @@ Retorne SOMENTE o JSON válido, sem markdown.
         res.json({ success: true, html: htmlReport });
     } catch (error) {
         console.error('Erro na análise:', error);
-        res.status(500).json({ error: 'Erro ao gerar o diagnóstico.' });
+        res.status(500).json({ error: 'Erro ao gerar o diagnóstico. Detalhe técnico: ' + error.message });
     }
 });
 

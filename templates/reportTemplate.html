@@ -4,113 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnóstico Fluo - @{{username}}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #1e1e1e;
-            --text-primary: #F4EDC4; /* Cream */
-            --text-secondary: #aaaaaa;
-            --accent: #d8cd8f;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border: rgba(244, 237, 196, 0.2);
+            --color-bg-dark: #2c2c2c;
+            --color-bg-elevated: #353535;
+            --color-text-light: #f5f4ee;
+            --color-text-muted: #b8b8b8;
+            --color-accent: #f0eecc;
+            --border-color: #444444;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Inter', sans-serif;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            font-family: var(--font-body);
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-light);
             line-height: 1.6;
             margin: 0;
             padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
-            background: #151515;
-            padding: 40px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #242424;
+            padding: 50px 60px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
         header {
             text-align: center;
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 30px;
+            margin-bottom: 50px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .logo-font {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 3.5rem;
-            font-weight: 600;
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
             margin: 0;
-            color: var(--text-primary);
+            color: var(--color-accent);
+            letter-spacing: 2px;
         }
 
         .subtitle {
-            font-size: 0.85rem;
-            letter-spacing: 3px;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-top: 5px;
+            color: var(--color-text-muted);
+            margin-top: 10px;
         }
 
         h1 {
-            font-size: 1.5rem;
-            font-weight: 300;
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            font-weight: 600;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            color: var(--color-text-light);
         }
 
         h2 {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: var(--accent);
+            font-family: var(--font-heading);
+            color: var(--color-accent);
             font-size: 1.8rem;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(216, 205, 143, 0.2);
-            padding-bottom: 10px;
+            font-weight: 600;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2::after {
+            content: "";
+            flex: 1;
+            margin-left: 20px;
+            height: 1px;
+            background: var(--border-color);
         }
 
         .badge {
-            background: rgba(244, 237, 196, 0.1);
-            color: var(--accent);
-            padding: 5px 12px;
+            background: var(--color-bg-elevated);
+            color: var(--color-accent);
+            padding: 6px 16px;
             border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-family: var(--font-body);
             font-weight: 600;
-            font-family: monospace;
+            font-size: 1rem;
         }
 
         .card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            margin-bottom: 25px;
+            background: var(--color-bg-elevated);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
         }
 
         .overview-text {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.8;
-            color: #dddddd;
+            color: var(--color-text-light);
             font-weight: 300;
         }
 
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            .container { padding: 20px; }
+            gap: 30px;
         }
 
         ul {
@@ -120,78 +128,94 @@
 
         li {
             margin-bottom: 15px;
-            padding-left: 20px;
+            padding-left: 24px;
             position: relative;
-            color: #cccccc;
+            color: var(--color-text-light);
+            font-size: 0.95rem;
         }
 
         li::before {
-            content: '•';
-            color: var(--accent);
+            content: '✦';
+            color: var(--color-accent);
             position: absolute;
             left: 0;
-            font-size: 1.2rem;
-            top: -2px;
+            top: 2px;
+            font-size: 0.9rem;
         }
 
         .weakness-item strong {
-            color: #ff9b9b;
+            color: #ff8b94;
             display: block;
             margin-bottom: 5px;
+            font-size: 1rem;
         }
 
         .weakness-item em {
-            color: var(--accent);
+            color: var(--color-accent);
             font-style: normal;
-            font-size: 0.95em;
+            font-size: 0.9rem;
+            display: block;
+            background: rgba(240, 238, 204, 0.05);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 2px solid var(--color-accent);
+            margin-top: 8px;
         }
 
         .positioning-item {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .positioning-item strong {
-            color: var(--accent);
+            color: var(--color-text-muted);
             display: block;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
         }
 
         .positioning-item span {
-            color: #eeeeee;
-            font-size: 1.05rem;
+            color: var(--color-accent);
+            font-size: 1.1rem;
+            font-family: var(--font-heading);
+            font-weight: 600;
         }
 
         .action-list li {
-            background: rgba(216, 205, 143, 0.05);
-            padding: 15px 15px 15px 40px;
-            border-radius: 6px;
-            border-left: 3px solid var(--accent);
+            background: var(--color-bg-elevated);
+            padding: 20px 20px 20px 50px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
         .action-list li::before {
-            content: '→';
-            left: 15px;
-            top: 14px;
+            content: '1';
+            left: 20px;
+            top: 20px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            font-weight: bold;
         }
+        
+        .action-list li:nth-child(2)::before { content: '2'; }
+        .action-list li:nth-child(3)::before { content: '3'; }
+        .action-list li:nth-child(4)::before { content: '4'; }
 
         .footer {
-            margin-top: 50px;
+            margin-top: 60px;
             text-align: center;
-            font-size: 0.85em;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border);
-            padding-top: 20px;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
         }
         
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 15px;
-            margin-top: 20px;
-            margin-bottom: 30px;
+            margin-top: 25px;
         }
 
         .gallery img {
@@ -199,22 +223,31 @@
             aspect-ratio: 1 / 1;
             object-fit: cover;
             border-radius: 8px;
-            border: 2px solid var(--border);
+            border: 1px solid var(--border-color);
+        }
+
+        @media print {
+            body { background: #2c2c2c; -webkit-print-color-adjust: exact; }
+            .container { box-shadow: none; border: none; padding: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .container { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1 class="logo-font">Fluo</h1>
-            <p class="subtitle">assessoria de marketing</p>
+            <div class="logo">FLUO.</div>
+            <div class="subtitle">assessoria de marketing</div>
         </header>
 
-        <h1>Diagnóstico Estratégico: <span class="badge">@{{username}}</span></h1>
+        <h1>Diagnóstico Estratégico <br><span class="badge" style="display:inline-block; margin-top:15px;">@{{username}}</span></h1>
         
         <div class="card">
             <p class="overview-text">{{instagramAnalysis}}</p>
-            
             <div class="gallery">
                 {{latestPostsImages}}
             </div>
@@ -277,7 +310,7 @@
         </ul>
 
         <div class="footer">
-            Gerado pela Inteligência Artificial exclusiva da <strong>Fluo Assessoria</strong>
+            Diagnóstico gerado exclusivamente pela Inteligência Artificial da <strong>Fluo Assessoria de Marketing</strong>.
         </div>
     </div>
 </body>
