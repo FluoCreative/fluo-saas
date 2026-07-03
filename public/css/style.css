@@ -283,6 +283,65 @@ section {
     border-left: 3px solid var(--color-accent);
 }
 
+/* Testimonials / WhatsApp Bubbles */
+.testimonials-section {
+    background-color: var(--color-bg-dark);
+    padding: 100px 0;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.whatsapp-bubble {
+    background-color: #202c33; /* WhatsApp Dark Mode */
+    color: #e9edef;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border-top-left-radius: 0;
+    position: relative;
+    text-align: left;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.whatsapp-bubble::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid #202c33;
+    border-left: 10px solid transparent;
+}
+
+.whatsapp-name {
+    color: var(--color-accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.whatsapp-meta {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: #8696a0;
+}
+
+.whatsapp-ticks {
+    color: #53bdeb; /* Blue ticks */
+    margin-left: 5px;
+    font-size: 0.85rem;
+}
+
 /* Checkout / PIX Section */
 .checkout-section {
     background-color: #1a1a1a;
