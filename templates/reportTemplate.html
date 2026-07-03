@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Fluo - @{{username}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --text-primary: #F4EDC4; /* Cream */
+            --text-secondary: #aaaaaa;
+            --accent: #d8cd8f;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border: rgba(244, 237, 196, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #151515;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 30px;
+        }
+
+        .logo-font {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--accent);
+            font-size: 1.8rem;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(216, 205, 143, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .badge {
+            background: rgba(244, 237, 196, 0.1);
+            color: var(--accent);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+
+        .overview-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #dddddd;
+            font-weight: 300;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .container { padding: 20px; }
+        }
+
+        ul {
+            padding-left: 0;
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+            color: #cccccc;
+        }
+
+        li::before {
+            content: '•';
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+            top: -2px;
+        }
+
+        .weakness-item strong {
+            color: #ff9b9b;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .weakness-item em {
+            color: var(--accent);
+            font-style: normal;
+            font-size: 0.95em;
+        }
+
+        .positioning-item {
+            margin-bottom: 15px;
+        }
+
+        .positioning-item strong {
+            color: var(--accent);
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .positioning-item span {
+            color: #eeeeee;
+            font-size: 1.05rem;
+        }
+
+        .action-list li {
+            background: rgba(216, 205, 143, 0.05);
+            padding: 15px 15px 15px 40px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .action-list li::before {
+            content: '→';
+            left: 15px;
+            top: 14px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .gallery img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo-font">Fluo</h1>
+            <p class="subtitle">assessoria de marketing</p>
+        </header>
+
+        <h1>Diagnóstico Estratégico: <span class="badge">@{{username}}</span></h1>
+        
+        <div class="card">
+            <p class="overview-text">{{instagramAnalysis}}</p>
+            
+            <div class="gallery">
+                {{latestPostsImages}}
+            </div>
+        </div>
+
+        <div class="grid">
+            <div>
+                <h2>Potenciais da Marca</h2>
+                <ul>
+                    {{strengths}}
+                </ul>
+            </div>
+            <div>
+                <h2>Gargalos & Soluções</h2>
+                <ul>
+                    {{weaknesses}}
+                </ul>
+            </div>
+        </div>
+
+        <h2>Posicionamento Estratégico</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="positioning-item">
+                    <strong>Arquétipo Dominante</strong>
+                    <span>{{archetype}}</span>
+                </div>
+                <div class="positioning-item">
+                    <strong>Força Maior</strong>
+                    <span>{{greatestStrength}}</span>
+                </div>
+                <div class="positioning-item">
+                    <strong>Personalidade</strong>
+                    <span>{{personality}}</span>
+                </div>
+                <div class="positioning-item">
+                    <strong>Tom de Voz</strong>
+                    <span>{{toneOfVoice}}</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="positioning-item">
+                    <strong>Mercado de Atuação</strong>
+                    <span>{{market}}</span>
+                </div>
+                <div class="positioning-item">
+                    <strong>Oportunidades de Ouro</strong>
+                    <span>{{opportunities}}</span>
+                </div>
+                <div class="positioning-item">
+                    <strong>Desafios Imediatos</strong>
+                    <span>{{challenges}}</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>Plano de Ação Imediato</h2>
+        <ul class="action-list">
+            {{immediateImprovements}}
+        </ul>
+
+        <div class="footer">
+            Gerado pela Inteligência Artificial exclusiva da <strong>Fluo Assessoria</strong>
+        </div>
+    </div>
+</body>
+</html>
