@@ -179,7 +179,13 @@ Retorne SOMENTE o JSON válido, sem markdown.
             config: { responseMimeType: 'application/json' }
         });
 
-        const diagnostic = JSON.parse(response.text);
+        // Limpar possíveis marcações Markdown (```json ... ```) antes de fazer o parse
+        let rawJson = response.text.trim();
+        if (rawJson.startsWith('```')) {
+            rawJson = rawJson.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '');
+        }
+
+        const diagnostic = JSON.parse(rawJson);
 
         const templatePath = path.join(__dirname, '../templates', 'reportTemplate.html');
         let htmlReport = fs.readFileSync(templatePath, 'utf8');
