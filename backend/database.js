@@ -1,25 +1,34 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
-const fs = require('fs');
 
-const dbPath = path.resolve(__dirname, '../database.sqlite');
-const db = new sqlite3.Database(dbPath);
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false } // Required for Supabase/Render
+});
 
-db.serialize(() => {
-    db.run(`
+pool.connect((err, client, release) => {
+    if (err) {
+        console.error('Erro ao conectar ao PostgreSQL. Verifique sua DATABASE_URL.', err.stack);
+        return;
+    }
+    console.log('Conectado ao PostgreSQL com sucesso.');
+    
+    // Migrações Iniciais
+    client.query(`
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            password_hash TEXT,
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(255) UNIQUE NOT NULL,
+            password_hash VARCHAR(255) NOT NULL,
             credits INTEGER DEFAULT 2,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-    `);
-
-    // Migração: Adicionar coluna credits se ela não existir nas tabelas antigas
-    db.run(`ALTER TABLE users ADD COLUMN credits INTEGER DEFAULT 2`, (err) => {
-        // Ignorar o erro se a coluna já existir (SQLITE_ERROR: duplicate column name: credits)
+    `, (err) => {
+        release();
+        if (err) {
+            console.error('Erro ao criar tabela users:', err.stack);
+        } else {
+            console.log('Tabela users garantida no PostgreSQL.');
+        }
     });
 });
 
@@ -28,19 +37,24 @@ const createUser = async (username, password) => {
     const hash = await bcrypt.hash(password, saltRounds);
     
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO users (username, password_hash) VALUES (?, ?)', [username, hash], function(err) {
-            if (err) reject(err);
-            else resolve(this.lastID);
-        });
+        pool.query(
+            'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id',
+            [username, hash],
+            (err, res) => {
+                if (err) reject(err);
+                else resolve(res.rows[0].id);
+            }
+        );
     });
 };
 
 const verifyUser = async (username, password) => {
     return new Promise((resolve, reject) => {
-        db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
+        pool.query('SELECT * FROM users WHERE username = $1', [username], async (err, res) => {
             if (err) reject(err);
-            if (!row) resolve(false);
+            if (res.rows.length === 0) resolve(false);
             else {
+                const row = res.rows[0];
                 const match = await bcrypt.compare(password, row.password_hash);
                 resolve(match ? row : false);
             }
@@ -50,24 +64,28 @@ const verifyUser = async (username, password) => {
 
 const getUserCredits = async (userId) => {
     return new Promise((resolve, reject) => {
-        db.get('SELECT credits FROM users WHERE id = ?', [userId], (err, row) => {
+        pool.query('SELECT credits FROM users WHERE id = $1', [userId], (err, res) => {
             if (err) reject(err);
-            else resolve(row ? row.credits : 0);
+            else resolve(res.rows.length > 0 ? res.rows[0].credits : 0);
         });
     });
 };
 
 const consumeCredit = async (userId) => {
     return new Promise((resolve, reject) => {
-        db.run('UPDATE users SET credits = credits - 1 WHERE id = ? AND credits > 0', [userId], function(err) {
-            if (err) reject(err);
-            else resolve(this.changes > 0);
-        });
+        pool.query(
+            'UPDATE users SET credits = credits - 1 WHERE id = $1 AND credits > 0 RETURNING id',
+            [userId],
+            (err, res) => {
+                if (err) reject(err);
+                else resolve(res.rowCount > 0);
+            }
+        );
     });
 };
 
 module.exports = {
-    db,
+    pool,
     createUser,
     verifyUser,
     getUserCredits,
