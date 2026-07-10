@@ -53,7 +53,7 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'admin_dashboard.html';
                 } else {
                     errorMsg.textContent = data.error || 'Erro ao fazer login.';
                 }
