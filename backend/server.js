@@ -170,11 +170,23 @@ Você deve gerar um diagnóstico estruturado em JSON com as chaves: instagramAna
 Retorne SOMENTE o JSON válido, sem markdown.
 `;
         
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-            config: { responseMimeType: 'application/json' }
-        });
+        let response;
+        let retries = 3;
+        while (retries > 0) {
+            try {
+                response = await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: prompt,
+                    config: { responseMimeType: 'application/json' }
+                });
+                break;
+            } catch (apiError) {
+                console.error(`Falha na API da IA. Tentativas restantes: ${retries - 1}. Erro:`, apiError.message);
+                retries--;
+                if (retries === 0) throw apiError;
+                await new Promise(res => setTimeout(res, 2500)); // Espera 2.5s
+            }
+        }
 
         // Limpar possíveis marcações Markdown (```json ... ```) antes de fazer o parse
         let rawJson = response.text.trim();
