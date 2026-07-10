@@ -121,7 +121,7 @@
 
         async function downloadReport(id, instagram) {
             try {
-                const res = await fetch(\`/api/admin/lead/\${id}/html\`);
+                const res = await fetch(`/api/admin/lead/${id}/html`);
                 if (!res.ok) throw new Error('Erro ao baixar');
                 const htmlContent = await res.text();
                 
@@ -130,7 +130,7 @@
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = \`Diagnostico_Fluo_\${instagram}.html\`;
+                a.download = `Diagnostico_Fluo_${instagram}.html`;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
