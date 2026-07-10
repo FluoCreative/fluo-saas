@@ -6,6 +6,11 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false } // Required for Supabase/Render
 });
 
+// Impede que quedas de conexão no banco travem o servidor (Render 502)
+pool.on('error', (err, client) => {
+    console.error('Erro inesperado na conexão com o banco de dados:', err);
+});
+
 pool.connect((err, client, release) => {
     if (err) {
         console.error('Erro ao conectar ao PostgreSQL. Verifique sua DATABASE_URL.', err.stack);

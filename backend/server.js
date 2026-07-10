@@ -130,8 +130,10 @@ app.post('/api/analyze', requireAuth, async (req, res) => {
         let instagramData = '';
         let latestImagesHtml = '';
         try {
+            // Otimização: Limitar os resultados para forçar a Apify a ser mais rápida e evitar Timeout 502
             const run = await apifyClient.actor("apify/instagram-profile-scraper").call({
-                usernames: [cleanUsername]
+                usernames: [cleanUsername],
+                resultsLimit: 1
             });
             const { items } = await apifyClient.dataset(run.defaultDatasetId).listItems();
             
