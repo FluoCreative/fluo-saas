@@ -84,7 +84,7 @@
                 if (data.leads && data.leads.length > 0) {
                     data.leads.forEach(lead => {
                         const date = new Date(lead.created_at).toLocaleString('pt-BR');
-                        const cleanPhone = lead.phone.replace(/\D/g, '');
+                        const cleanPhone = (lead.phone || '').replace(/\D/g, '');
                         
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
@@ -110,7 +110,12 @@
                 
             } catch (error) {
                 console.error("Erro ao buscar leads:", error);
-                alert("Erro ao carregar os leads.");
+                const tbody = document.getElementById('leadsBody');
+                if(tbody) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="color: red; text-align: center;">Erro técnico: ${error.message}. Pressione F12 para ver o console.</td></tr>`;
+                } else {
+                    alert("Erro técnico: " + error.message);
+                }
             }
         });
 
