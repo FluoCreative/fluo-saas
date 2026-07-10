@@ -100,9 +100,10 @@ app.post('/api/admin/create-user', async (req, res) => {
 
     try {
         const { createUser } = require('./database');
-        createUser(username, password);
+        await createUser(username, password);
         res.json({ success: true, message: `Cliente ${username} criado com sucesso!` });
     } catch (e) {
+        console.error("Erro ao criar usuário:", e);
         res.status(500).json({ error: 'Erro ao criar cliente.' });
     }
 });

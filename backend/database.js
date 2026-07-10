@@ -56,13 +56,14 @@ const createUser = async (username, password) => {
 const verifyUser = async (username, password) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT * FROM users WHERE username = $1', [username], async (err, res) => {
-            if (err) reject(err);
-            if (res.rows.length === 0) resolve(false);
-            else {
-                const row = res.rows[0];
-                const match = await bcrypt.compare(password, row.password_hash);
-                resolve(match ? row : false);
+            if (err) {
+                return reject(err);
             }
+            if (res.rows.length === 0) return resolve(false);
+            
+            const row = res.rows[0];
+            const match = await bcrypt.compare(password, row.password_hash);
+            resolve(match ? row : false);
         });
     });
 };
@@ -70,8 +71,10 @@ const verifyUser = async (username, password) => {
 const getUserCredits = async (userId) => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT credits FROM users WHERE id = $1', [userId], (err, res) => {
-            if (err) reject(err);
-            else resolve(res.rows.length > 0 ? res.rows[0].credits : 0);
+            if (err) {
+                return reject(err);
+            }
+            resolve(res.rows.length > 0 ? res.rows[0].credits : 0);
         });
     });
 };
