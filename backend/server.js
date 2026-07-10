@@ -67,7 +67,8 @@ app.post('/api/login', async (req, res) => {
             res.status(401).json({ error: 'Usuário ou senha inválidos' });
         }
     } catch (e) {
-        res.status(500).json({ error: 'Erro no servidor' });
+        console.error("Erro no login:", e);
+        res.status(500).json({ error: 'Erro no servidor: ' + e.message });
     }
 });
 
@@ -104,7 +105,7 @@ app.post('/api/admin/create-user', async (req, res) => {
         res.json({ success: true, message: `Cliente ${username} criado com sucesso!` });
     } catch (e) {
         console.error("Erro ao criar usuário:", e);
-        res.status(500).json({ error: 'Erro ao criar cliente.' });
+        res.status(500).json({ error: 'Erro ao criar cliente: ' + e.message });
     }
 });
 
