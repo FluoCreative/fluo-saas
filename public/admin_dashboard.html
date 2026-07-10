@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Leads | Fluo Assessoria</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            color: white;
+            text-align: left;
+        }
+        .leads-table th, .leads-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .leads-table th {
+            color: var(--color-text-muted);
+            font-weight: normal;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .leads-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .badge-new {
+            background: #4ade80;
+            color: #111;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar container">
+        <div class="logo">FLUO ADMIN.</div>
+        <div>
+            <a href="#" id="logoutBtn" class="btn btn-outline" style="border: none; color: #ff6b6b;">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 1000px; padding-top: 40px; padding-bottom: 80px;">
+        <h2 style="margin-bottom: 5px;">Leads Captados</h2>
+        <p class="text-muted" style="margin-bottom: 30px;">Faça o download do relatório e envie manualmente no WhatsApp do cliente.</p>
+        
+        <div class="checkout-box" style="padding: 20px; overflow-x: auto;">
+            <table class="leads-table" id="leadsTable">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Instagram</th>
+                        <th>WhatsApp</th>
+                        <th>Nicho</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="leadsBody">
+                    <!-- Leads serão injetados aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script do Painel de Leads -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/admin/leads');
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                const data = await res.json();
+                
+                const tbody = document.getElementById('leadsBody');
+                
+                if (data.leads && data.leads.length > 0) {
+                    data.leads.forEach(lead => {
+                        const date = new Date(lead.created_at).toLocaleString('pt-BR');
+                        const cleanPhone = lead.phone.replace(/\D/g, '');
+                        
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="font-size: 0.9rem; color: var(--color-text-muted);">${date}</td>
+                            <td style="font-weight: bold; color: var(--color-accent);">@${lead.instagram}</td>
+                            <td>
+                                <a href="https://wa.me/55${cleanPhone}" target="_blank" style="color: #25D366; text-decoration: none;">
+                                    ${lead.phone}
+                                </a>
+                            </td>
+                            <td>${lead.niche}</td>
+                            <td>
+                                <button onclick="downloadReport(${lead.id}, '${lead.instagram}')" class="btn" style="padding: 8px 15px; font-size: 0.8rem; background: var(--bg-card); color: white; border: 1px solid var(--border-color);">
+                                    Baixar HTML
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--color-text-muted);">Nenhum lead captado ainda.</td></tr>';
+                }
+                
+            } catch (error) {
+                console.error("Erro ao buscar leads:", error);
+                alert("Erro ao carregar os leads.");
+            }
+        });
+
+        async function downloadReport(id, instagram) {
+            try {
+                const res = await fetch(\`/api/admin/lead/\${id}/html\`);
+                if (!res.ok) throw new Error('Erro ao baixar');
+                const htmlContent = await res.text();
+                
+                // Criar um blob e forçar download
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = \`Diagnostico_Fluo_\${instagram}.html\`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } catch (error) {
+                alert("Erro ao fazer o download do relatório.");
+            }
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

@@ -11,18 +11,18 @@
     <nav class="navbar container">
         <div class="logo">FLUO.</div>
         <div>
-            <a href="login.html" class="btn btn-outline">Já tenho acesso</a>
+            <a href="login.html" class="btn btn-outline" style="border: none; opacity: 0.5; font-size: 0.8rem;">Painel Admin</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <header class="hero">
         <div class="container animate-fade-up">
-            <span class="badge">Análise com Inteligência Artificial</span>
+            <span class="badge">Análise com Inteligência Artificial Gratuita</span>
             <h1>Descubra o que falta para o seu<br>Instagram trazer clientes.</h1>
-            <p>Não é um número solto, é um plano de ação. Nossa IA examina seu perfil e revela o que está travando o seu crescimento de forma direta e sem rodeios.</p>
-            <a href="#comprar" class="btn">Quero meu Diagnóstico</a>
-            <p class="text-muted mt-2" style="font-size: 0.85rem; margin-top: 15px;">Sem mensalidades • Acesso Imediato • Estratégia Fluo</p>
+            <p>Nossa IA examina seu perfil e nossa equipe te entrega um plano de ação gratuito e direto ao ponto no seu WhatsApp.</p>
+            <a href="#captura" class="btn">Solicitar Análise Gratuita</a>
+            <p class="text-muted mt-2" style="font-size: 0.85rem; margin-top: 15px;">100% Gratuito • Estratégia Fluo</p>
             
             <img src="images/7_ok.png" alt="Dashboard Fluo Diagnóstico" class="hero-mockup animate-fade-up delay-2">
         </div>
@@ -36,18 +36,18 @@
         <div class="steps-grid">
             <div class="step-card animate-fade-up delay-1">
                 <div class="step-number">1</div>
-                <h3>Garanta seu Acesso</h3>
-                <p>Faça o pagamento via PIX e envie o comprovante para o nosso WhatsApp. A liberação é feita na mesma hora.</p>
+                <h3>Solicite a Análise</h3>
+                <p>Preencha o formulário abaixo com o seu Instagram, WhatsApp e nicho de atuação. É 100% gratuito.</p>
             </div>
             <div class="step-card animate-fade-up delay-2">
                 <div class="step-number">2</div>
-                <h3>Digite o seu @</h3>
-                <p>Acesse a plataforma exclusiva da Fluo com seu login e senha, e digite o seu nome de usuário do Instagram.</p>
+                <h3>Nossa IA audita o perfil</h3>
+                <p>A Inteligência Artificial lê os dados públicos, legenda e métricas para gerar um relatório exclusivo em segundos.</p>
             </div>
             <div class="step-card animate-fade-up delay-3">
                 <div class="step-number">3</div>
-                <h3>IA entra em ação</h3>
-                <p>A Inteligência Artificial lê os dados públicos do seu perfil, avalia as métricas e entrega seu relatório completo em 30 segundos.</p>
+                <h3>Receba no WhatsApp</h3>
+                <p>A análise é enviada para o contato comercial da Fluo Assessoria e nós enviaremos para você em seguida gratuitamente.</p>
             </div>
         </div>
     </section>
@@ -148,35 +148,119 @@
         </div>
     </section>
 
-    <!-- Checkout / PIX Section -->
-    <section id="comprar" class="checkout-section">
+    <!-- Lead Capture Section -->
+    <section id="captura" class="checkout-section">
         <div class="container text-center">
             <h2 class="animate-fade-up">Pronto para destravar seu perfil?</h2>
-            <p class="text-muted animate-fade-up">Adquira agora o seu diagnóstico e saiba exatamente o que fazer.</p>
+            <p class="text-muted animate-fade-up">Preencha os dados abaixo e solicite a sua análise de perfil profissional gratuita.</p>
 
-            <div class="checkout-box animate-fade-up delay-1">
-                <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; color: var(--color-text-muted);">Acesso Premium</p>
-                <div class="price">R$ 97,00</div>
+            <div class="checkout-box animate-fade-up delay-1" style="max-width: 500px; margin: 0 auto; text-align: left;">
                 
-                <p class="mt-2 text-muted">Para liberar seu login exclusivo, realize a transferência PIX para o CNPJ abaixo:</p>
-                
-                <div class="pix-key">
-                    61.262.641/0001-09
+                <form id="leadForm">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="username" style="display: block; margin-bottom: 5px; color: var(--color-text);">Qual é o seu Instagram?</label>
+                        <input type="text" id="username" class="form-control" required placeholder="@seunome" style="width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-color); color: white; border-radius: 8px;">
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="phone" style="display: block; margin-bottom: 5px; color: var(--color-text);">Seu WhatsApp (com DDD)</label>
+                        <input type="text" id="phone" class="form-control" required placeholder="(11) 99999-9999" style="width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-color); color: white; border-radius: 8px;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label for="niche" style="display: block; margin-bottom: 5px; color: var(--color-text);">Qual sua área de atuação?</label>
+                        <input type="text" id="niche" class="form-control" required placeholder="Ex: Estética, Nutrição, Loja de Roupas..." style="width: 100%; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-color); color: white; border-radius: 8px;">
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn" style="width: 100%; font-size: 1.1rem; padding: 18px;">
+                        Analisar Meu Perfil Gratuitamente
+                    </button>
+                    
+                    <div id="loaderContainer" style="display: none; text-align: center; margin-top: 2rem;">
+                        <div class="loader"></div>
+                        <h4 id="loaderTitle" style="color: var(--color-accent); margin-top: 15px; font-family: var(--font-heading); font-size: 1.3rem;">Iniciando análise...</h4>
+                        <p id="loaderSubtitle" style="color: var(--color-text-muted); font-size: 0.9rem; margin-top: 5px;">A Inteligência Artificial está auditando o seu perfil. Aguarde...</p>
+                    </div>
+
+                    <div class="error-message" id="errorMsg" style="color: #ff6b6b; margin-top: 15px; text-align: center;"></div>
+                </form>
+
+                <div id="successMessage" style="display: none; text-align: center; margin-top: 20px;">
+                    <div style="font-size: 3rem; color: #4ade80; margin-bottom: 10px;">✓</div>
+                    <h3 style="color: white; margin-bottom: 10px;">Análise Concluída e Salva!</h3>
+                    <p style="color: var(--color-text-muted); margin-bottom: 20px; line-height: 1.5;">A análise foi enviada para o contato comercial da Fluo Assessoria e nós estaremos enviando para você em seguida o material completo gratuitamente.</p>
+                    
+                    <a id="whatsappBtn" href="#" target="_blank" class="btn" style="width: 100%; font-size: 1.1rem; padding: 15px; background: #25D366; color: white;">
+                        Mande um Oi no nosso WhatsApp
+                    </a>
                 </div>
-                
-                <p class="text-muted" style="font-size: 0.9rem;">Fluo Assessoria de Marketing</p>
 
-                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
-
-                <h3 style="font-size: 1.2rem; margin-bottom: 15px;">Já fez o PIX?</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 20px;">Envie o comprovante no nosso WhatsApp oficial e receba a senha de acesso imediatamente.</p>
-                
-                <a href="https://wa.me/555198374413?text=Olá, acabei de fazer o PIX de R$97 para o Diagnóstico Fluo. Segue meu comprovante!" target="_blank" class="btn" style="width: 100%; font-size: 1.1rem; padding: 18px;">
-                    Enviar Comprovante pelo WhatsApp
-                </a>
             </div>
         </div>
     </section>
+
+    <!-- Script de Captação -->
+    <script>
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const phone = document.getElementById('phone').value;
+            const niche = document.getElementById('niche').value;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loaderContainer = document.getElementById('loaderContainer');
+            const loaderTitle = document.getElementById('loaderTitle');
+            const errorMsg = document.getElementById('errorMsg');
+            const successMessage = document.getElementById('successMessage');
+            
+            submitBtn.style.display = 'none';
+            loaderContainer.style.display = 'block';
+            errorMsg.textContent = '';
+            
+            const messages = [
+                "Conectando ao Instagram...",
+                "Lendo a bio e os últimos posts...",
+                "A Inteligência Artificial da Fluo está analisando...",
+                "Encontrando gargalos e oportunidades...",
+                "Escrevendo o relatório final e notificando a equipe..."
+            ];
+            let msgIndex = 0;
+            const msgInterval = setInterval(() => {
+                msgIndex = (msgIndex + 1) % messages.length;
+                loaderTitle.textContent = messages[msgIndex];
+            }, 8000);
+            
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, phone, niche })
+                });
+                
+                const data = await res.json();
+                
+                clearInterval(msgInterval);
+                loaderContainer.style.display = 'none';
+                
+                if (data.success) {
+                    document.getElementById('leadForm').style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    const waText = encodeURIComponent(`Olá! Acabei de solicitar a análise gratuita do meu perfil @${username.replace('@', '')}. Podem me enviar?`);
+                    document.getElementById('whatsappBtn').href = `https://wa.me/5551998374413?text=${waText}`;
+                } else {
+                    errorMsg.textContent = data.error || 'Erro ao gerar análise.';
+                    submitBtn.style.display = 'inline-block';
+                }
+            } catch (err) {
+                clearInterval(msgInterval);
+                loaderContainer.style.display = 'none';
+                errorMsg.textContent = 'Erro de conexão com o servidor.';
+                submitBtn.style.display = 'inline-block';
+            }
+        });
+    </script>
 
     <!-- Footer -->
     <footer>

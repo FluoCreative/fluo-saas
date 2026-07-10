@@ -26,13 +26,21 @@ pool.connect((err, client, release) => {
             password_hash VARCHAR(255) NOT NULL,
             credits INTEGER DEFAULT 2,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
+        );
+        CREATE TABLE IF NOT EXISTS leads (
+            id SERIAL PRIMARY KEY,
+            instagram VARCHAR(255) NOT NULL,
+            phone VARCHAR(255) NOT NULL,
+            niche VARCHAR(255) NOT NULL,
+            html_report TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
     `, (err) => {
         release();
         if (err) {
-            console.error('Erro ao criar tabela users:', err.stack);
+            console.error('Erro ao criar tabelas:', err.stack);
         } else {
-            console.log('Tabela users garantida no PostgreSQL.');
+            console.log('Tabelas users e leads garantidas no PostgreSQL.');
         }
     });
 });
@@ -92,10 +100,44 @@ const consumeCredit = async (userId) => {
     });
 };
 
+const createLead = async (instagram, phone, niche, htmlReport) => {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            'INSERT INTO leads (instagram, phone, niche, html_report) VALUES ($1, $2, $3, $4) RETURNING id',
+            [instagram, phone, niche, htmlReport],
+            (err, res) => {
+                if (err) reject(err);
+                else resolve(res.rows[0].id);
+            }
+        );
+    });
+};
+
+const getLeads = async () => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT id, instagram, phone, niche, created_at FROM leads ORDER BY created_at DESC', (err, res) => {
+            if (err) reject(err);
+            else resolve(res.rows);
+        });
+    });
+};
+
+const getLeadHtml = async (id) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT html_report FROM leads WHERE id = $1', [id], (err, res) => {
+            if (err) reject(err);
+            else resolve(res.rows.length > 0 ? res.rows[0].html_report : null);
+        });
+    });
+};
+
 module.exports = {
     pool,
     createUser,
     verifyUser,
     getUserCredits,
-    consumeCredit
+    consumeCredit,
+    createLead,
+    getLeads,
+    getLeadHtml
 };

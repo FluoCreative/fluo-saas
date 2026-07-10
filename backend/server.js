@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const session = require('express-session');
-const { verifyUser, getUserCredits, consumeCredit } = require('./database');
+const { verifyUser, getUserCredits, consumeCredit, createUser, createLead, getLeads, getLeadHtml } = require('./database');
 
 dotenv.config();
 
@@ -110,24 +110,17 @@ app.post('/api/admin/create-user', async (req, res) => {
 });
 
 
-// Análise Protegida
-app.post('/api/analyze', requireAuth, async (req, res) => {
+// Análise Pública (Lead Gen)
+app.post('/api/analyze', async (req, res) => {
     try {
-        const { username, businessDescription } = req.body;
-        const userId = req.session.userId;
+        const { username, phone, niche } = req.body;
         
-        // Verificar Créditos
-        const credits = await getUserCredits(userId);
-        if (credits <= 0) {
-            return res.status(403).json({ error: 'Você atingiu o limite de 2 análises. Adquira um novo acesso para continuar.' });
-        }
-
-        if (!username) {
-            return res.status(400).json({ error: 'Username do Instagram é obrigatório.' });
+        if (!username || !phone || !niche) {
+            return res.status(400).json({ error: 'Instagram, WhatsApp e Área de Atuação são obrigatórios.' });
         }
         
         const cleanUsername = username.replace('@', '').trim();
-        console.log(`[User ${req.session.username} - Creditos: ${credits}] Iniciando análise para @${cleanUsername}...`);
+        console.log(`[Lead Capture] Iniciando análise silenciosa para @${cleanUsername}...`);
 
         let instagramData = '';
         let latestImagesHtml = '';
@@ -168,7 +161,7 @@ app.post('/api/analyze', requireAuth, async (req, res) => {
         const prompt = `
 Você é um estrategista de marca e diretor de criação Sênior de uma agência de marketing de altíssimo padrão chamada "Fluo Assessoria de Marketing".
 Seu objetivo é fazer uma auditoria e um diagnóstico profundo, denso e extremamente detalhado para o perfil do Instagram: @${username}.
-Informação adicional sobre o negócio do cliente: ${businessDescription}
+Área de atuação do cliente: ${niche}
 
 Aqui estão os dados reais do perfil:
 ${instagramData}
@@ -208,13 +201,33 @@ Retorne SOMENTE o JSON válido, sem markdown.
         htmlReport = htmlReport.replace(/{{immediateImprovements}}/g, diagnostic.immediateImprovements.map(s => `<li>${s}</li>`).join(''));
         htmlReport = htmlReport.replace(/{{latestPostsImages}}/g, latestImagesHtml);
 
-        // Consumir 1 crédito após análise gerada com sucesso
-        await consumeCredit(userId);
+        // Salvar o Lead e o HTML no banco de dados para a Fluo
+        await createLead(cleanUsername, phone, niche, htmlReport);
 
-        res.json({ success: true, html: htmlReport });
+        res.json({ success: true, message: 'Análise gerada e salva com sucesso.' });
     } catch (error) {
         console.error('Erro na análise:', error);
         res.status(500).json({ error: 'Erro ao gerar o diagnóstico. Detalhe técnico: ' + error.message });
+    }
+});
+
+// --- ROTAS DO ADMIN (LEAD DASHBOARD) ---
+app.get('/api/admin/leads', requireAuth, async (req, res) => {
+    try {
+        const leads = await getLeads();
+        res.json({ success: true, leads });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar leads: ' + error.message });
+    }
+});
+
+app.get('/api/admin/lead/:id/html', requireAuth, async (req, res) => {
+    try {
+        const html = await getLeadHtml(req.params.id);
+        if (!html) return res.status(404).json({ error: 'Relatório não encontrado.' });
+        res.send(html);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar relatório: ' + error.message });
     }
 });
 
