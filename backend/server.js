@@ -172,24 +172,22 @@ Retorne SOMENTE o JSON válido, sem markdown.
         
         let response;
         let retries = 3;
-        let currentModel = 'gemini-1.5-flash';
         
         while (retries > 0) {
             try {
                 response = await ai.models.generateContent({
-                    model: currentModel,
+                    model: 'gemini-1.5-flash',
                     contents: prompt,
                     config: { responseMimeType: 'application/json' }
                 });
                 break;
             } catch (apiError) {
-                console.error(`Falha no modelo ${currentModel}. Tentativas restantes: ${retries - 1}. Erro:`, apiError.message);
+                console.error(`Falha no modelo. Tentativas restantes: ${retries - 1}. Erro:`, apiError.message);
                 retries--;
                 if (retries === 0) throw apiError;
                 
-                // Se o flash falhar por alta demanda, tenta o pro na próxima rodada
-                currentModel = 'gemini-1.5-pro';
-                await new Promise(res => setTimeout(res, 3000)); // Espera 3s
+                // Aguarda 5 segundos antes de tentar novamente para o servidor do Google estabilizar
+                await new Promise(res => setTimeout(res, 5000));
             }
         }
 
